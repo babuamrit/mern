@@ -8,7 +8,7 @@ app.use(express.static(path.join(__dirname, "build")));
 app.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
-//app.use("/apis", service);
+app.use("/api", service);
 app.get("/*", function (req, res) {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });

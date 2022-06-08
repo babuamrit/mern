@@ -1,10 +1,71 @@
-const express = require("express");
-var router = express.Router();
-router.post("/signin", function (req, res) {
-  // loging to perform user signin
+const { Router } = require("express");
+const db = require("../db.js");
+var cors = require("cors");
+var router = Router();
+const multer = require("multer");
+const {
+  updater,
+  deletefunction,
+  getbyid,
+  getbyparam,
+} = require("./uploadhandler.js");
+const upload = multer({ dest: "../uploads/" });
+
+router.get("/signin", function (req, res) {
+  res.send("/signin");
 });
 router.get("/", function (req, res) {
-  res.send("from modifies express server");
-  // fetches all messages of given user
+  db.query(
+    "CREATE TABLE IF NOT EXISTS page( id int NOT NULL AUTO_INCREMENT PRIMARY KEY ," +
+      " type varchar(400), entry1 varchar(1000), entry2 varchar(1000), entry3 varchar(1000)," +
+      " entry4 varchar(1000), entry5 varchar(1000), entry6 varchar(1000)," +
+      " text1 LONGTEXT, text2 LONGTEXT,text3 LONGTEXT," +
+      "text4 LONGTEXT);",
+    function (err, result, fields) {
+      db.close();
+      if (err) {
+        res.send("error happened");
+        res.end();
+        console.log(err);
+        return;
+      }
+
+      res.send("db created");
+      res.end();
+    }
+  );
 });
-module.exports.routes = router;
+
+router.post("/delete", cors(), (req, res) => {
+  console.log(req.query);
+  res.send("hello");
+  res.end();
+});
+
+router.post("/create", upload.array("file"), (req, res) => {
+  console.log(req.body);
+  res.send("created");
+  res.end();
+});
+router.post("/update", upload.array("file"), (req, res) => {
+  const metadata = req.body.metadata;
+  const data = req.body.data;
+  updater(req, res, metadata, data);
+});
+
+router.post("/delete", upload.array("file"), (req, res) => {
+  const data = req.body.data;
+  deletefunction(data, res);
+});
+
+router.post("/getbyid", upload.array("file"), (req, res) => {
+  const data = req.body.data;
+  getbyid(data, res);
+});
+
+router.post("/getbyparam", upload.array("file"), (req, res) => {
+  const data = req.body.data;
+  getbyparam(data, res);
+});
+
+module.exports = router;
