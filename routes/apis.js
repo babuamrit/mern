@@ -1,14 +1,16 @@
-const { Router } = require("express");
-const db = require("../db.js");
-var cors = require("cors");
+import {Router} from "express"
+import db from "../db.js"
+import cors from "cors"
+import multer from "multer"
+
 var router = Router();
-const multer = require("multer");
-const {
+
+import {
   updater,
   deletefunction,
   getbyid,
   getbyparam,
-} = require("./uploadhandler.js");
+} from "./uploadhandler.js";
 const upload = multer({ dest: "../uploads/" });
 
 router.get("/signin", function (req, res) {
@@ -64,8 +66,10 @@ router.post("/getbyid", upload.array("file"), (req, res) => {
 });
 
 router.post("/getbyparam", upload.array("file"), (req, res) => {
+
   const data = req.body.data;
-  getbyparam(data, res);
+  console.log(data)
+  getbyparam(JSON.parse(data), res);
 });
 
-module.exports = router;
+export default router
