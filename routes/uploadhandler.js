@@ -1,9 +1,9 @@
 import db from "../db.js";
-const uploader = (req, res, metadata, data) => {
-  switch (metadata.type) {
+const uploader = (req, res, data) => {
+  switch (data.type) {
     case "slider":
       db.query(
-        `INSERT INTO page (type,entry1,text1,text2) VALUES(slider, ${req.files[0].originalname}, ${data.text1}, ${data.text2}});`,
+        `INSERT INTO page (type,entry1,entry2,entry3) VALUES(slider, ${req.files[0].originalname}, ${data["Heading"]}, ${data["Sub Heading"]}}});`,
         (err, result, fields) => {
           if (err) {
             res.json({
@@ -14,6 +14,7 @@ const uploader = (req, res, metadata, data) => {
           }
 
           res.json({ success: true });
+          res.end();
           return;
         }
       );
@@ -22,7 +23,7 @@ const uploader = (req, res, metadata, data) => {
       break;
     case "services":
       db.query(
-        `INSERT INTO page (type,entry1,entry2,text1) VALUES(services, ${req.files[0].originalname}, ${data.name}, ${data.service_description}});`,
+        `INSERT INTO page (type,entry1,entry2,text1) VALUES(services, ${req.files[0].originalname}, ${data.name}, ${data.description}});`,
         (err, result, fields) => {
           if (err) {
             res.json({
@@ -33,13 +34,14 @@ const uploader = (req, res, metadata, data) => {
           }
 
           res.json({ success: true });
+          res.end()
           return;
         }
       );
       break;
     case "job_categories":
       db.query(
-        `INSERT INTO page (type,entry1, entry2,text2) VALUES(job_categories, ${req.files[0].originalname}, ${data.category_name}, ${data.category_description}});`,
+        `INSERT INTO page (type,entry1, entry2,text1) VALUES(job_categories, ${req.files[0].originalname}, ${data["category name"]}, ${data.description}});`,
         (err, result, fields) => {
           if (err) {
             res.json({
@@ -50,13 +52,13 @@ const uploader = (req, res, metadata, data) => {
           }
 
           res.json({ success: true });
-          return;
+res.end();          return;
         }
       );
       break;
     case "countries_we_serve":
       db.query(
-        `INSERT INTO page (type,entry1,entry2) VALUES(countries_we_serve, ${req.files[0].originalname}, ${data.name}});`,
+        `INSERT INTO page (type,entry1,entry2) VALUES(countries_we_serve, ${req.files[0].originalname}, ${data["Country name"]}});`,
         (err, result, fields) => {
           if (err) {
             res.json({
@@ -67,13 +69,13 @@ const uploader = (req, res, metadata, data) => {
           }
 
           res.json({ success: true });
-          return;
+res.end();          return;
         }
       );
       break;
     case "jobs_available":
       db.query(
-        `INSERT INTO page (type,entry1,entry2,entry3,entry4,text1) VALUES(jobs_available, ${req.files[0].originalname}, ${data.job_name}, ${data.job_category}, ${data.country}, ${data.job_description}});`,
+        `INSERT INTO page (type,entry1,entry2,entry3,entry4,text1) VALUES(jobs_available, ${req.files[0].originalname}, ${data["job name"]}, ${data.job_category}, ${data["country name"]}, ${data.description}});`,
         (err, result, fields) => {
           if (err) {
             res.json({
@@ -84,7 +86,7 @@ const uploader = (req, res, metadata, data) => {
           }
 
           res.json({ success: true });
-          return;
+res.end();          return;
         }
       );
       break;
@@ -101,7 +103,7 @@ const uploader = (req, res, metadata, data) => {
           }
 
           res.json({ success: true });
-          return;
+res.end();          return;
         }
       );
       break;
@@ -118,7 +120,7 @@ const uploader = (req, res, metadata, data) => {
           }
 
           res.json({ success: true });
-          return;
+res.end();          return;
         }
       );
       break;
@@ -150,7 +152,7 @@ const updater = (req, res, metadata, data) => {
           }
 
           res.json({ success: true });
-          return;
+res.end();          return;
         }
       );
 
@@ -175,7 +177,7 @@ const updater = (req, res, metadata, data) => {
           }
 
           res.json({ success: true });
-          return;
+res.end();          return;
         }
       );
 
@@ -199,7 +201,7 @@ const updater = (req, res, metadata, data) => {
           }
 
           res.json({ success: true });
-          return;
+res.end();          return;
         }
       );
 
@@ -221,7 +223,7 @@ const updater = (req, res, metadata, data) => {
           }
 
           res.json({ success: true });
-          return;
+res.end();          return;
         }
       );
       break;
@@ -244,7 +246,7 @@ const updater = (req, res, metadata, data) => {
           }
 
           res.json({ success: true });
-          return;
+res.end();          return;
         }
       );
       break;
@@ -267,7 +269,7 @@ const updater = (req, res, metadata, data) => {
           }
 
           res.json({ success: true });
-          return;
+res.end();          return;
         }
       );
       break;

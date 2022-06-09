@@ -5,7 +5,7 @@ import multer from "multer"
 
 var router = Router();
 
-import {
+import uploader, {
   updater,
   deletefunction,
   getbyid,
@@ -46,8 +46,8 @@ router.post("/delete", cors(), (req, res) => {
 
 router.post("/create", upload.array("file"), (req, res) => {
   console.log(req.body);
-  res.send("created");
-  res.end();
+  uploader(req,res,req.body.data)
+ 
 });
 router.post("/update", upload.array("file"), (req, res) => {
   const metadata = req.body.metadata;
