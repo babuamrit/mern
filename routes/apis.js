@@ -49,7 +49,7 @@ router.get("/iniglobal", function (req, res) {
   db.query(
     "INSERT INTO page (type) VALUES('global');",
     function (err, result, fields) {
-      db.close();
+
       if (err) {
         res.send("error happened");
         res.end();
@@ -67,7 +67,7 @@ router.get("/inimenu", function (req, res) {
   db.query(
     `INSERT INTO page (type,text1) VALUES('menu','${JSON.stringify([])}');`,
     function (err, result, fields) {
-      db.close();
+
       if (err) {
         res.send("error happened");
         res.end();
@@ -111,4 +111,12 @@ router.post("/getbyparam", upload.array("file"), (req, res) => {
   getbyparam(JSON.parse(data), res);
 });
 
+router.get("/getglobal",  (req, res) => {
+
+  getbyparam({key:"type",value:"global"}, res);
+});
+router.get("/getmenu",  (req, res) => {
+
+  getbyparam({key:"type",value:"menu"}, res);
+});
 export default router;

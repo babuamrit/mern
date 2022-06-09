@@ -149,12 +149,54 @@ const uploader = (req, res, data) => {
       );
       break;
     case "menuitem":
-      db.query(
-        `INSERT INTO page (type,entry1,entry2,entry3,entry4,text1) VALUES('menuitem', '${
+      let strr =""
+      if(data.hasfeaturedimage){
+        strr += `'${
           req.files[0].originalname
-        }',${req.files[1] != null ? req.files[1].originalname : ""}' , '${
+        }',`;
+        if(data.hasbannerimage){
+          strr += `'${
+            req.files[1].originalname
+          }',`;
+        if(data.hasfile){
+          strr += `'${
+            req.files[2].originalname
+          }',`;
+        }else{
+          strr+=`'',`
+        }
+        }else if(data.hasfile){
+          strr += `'','${
+            req.files[1].originalname
+          }',`;
+        }else{
+          strr+=`'','',`
+        }
+        
+      } else if(data.hasbannerimage){
+        strr += `'',`;
+        strr += `'${
+          req.files[0].originalname
+        }',`;
+      if(data.hasfile){
+        strr += `'${
+          req.files[1].originalname
+        }',`;
+      }else{
+        strr+=`'',`
+      }
+      }else if(data.hasfile){
+        strr += `'','',`;
+        strr += `'${
+          req.files[0].originalname
+        }',`;
+      }else{
+        strr += `'','',''`
+      }
+      db.query(
+        `INSERT INTO page (type,entry1,entry2,entry3,entry4,text1) VALUES('menuitem', ${strr}  '${
           data.name
-        }',${data.caption}',${data.description} )`,
+        }','${data.description}' )`,
         (err, result, fields) => {
           if (err) {
             res.json({
@@ -326,12 +368,13 @@ const updater = (req, res, data) => {
       );
       break;
     case "global":
+      console.log(JSON.stringify(data))
       db.query(
         `UPDATE page  SET ${
           req.files.length > 0
             ? "entry1 = '" + req.files[0].originalname + "',"
             : ""
-        } text1 = '${JSON.stringify(data)}' WHERE type = 'global';`,
+        } text1 = '${(JSON.stringify(data))}' WHERE type = 'global';`,
         (err, result, fields) => {
           if (err) {
             res.json({
@@ -348,18 +391,55 @@ const updater = (req, res, data) => {
       );
       break;
     case "menuitem":
+      
+
+
+
+      let strr =""
+      if(data.hasfeaturedimage){
+        strr += `entry1='${
+          req.files[0].originalname
+        }',`;
+        if(data.hasbannerimage){
+          strr += `entry2='${
+            req.files[1].originalname
+          }',`;
+        if(data.hasfile){
+          strr += `entry3='${
+            req.files[2].originalname
+          }',`;
+        }
+        }else if(data.hasfile){
+          strr += `entry3='${
+            req.files[1].originalname
+          }',`;
+        }
+        
+      } else if(data.hasbannerimage){
+     
+        strr += `entry2='${
+          req.files[0].originalname
+        }',`;
+      if(data.hasfile){
+        strr += `entry3='${
+          req.files[1].originalname
+        }',`;
+      }
+      }else if(data.hasfile){
+       
+        strr += `entry3='${
+          req.files[0].originalname
+        }',`;
+      }
+
+
+
+
+
       db.query(
-        `UPDATE  page SET ${
-          req.files.length > 0
-            ? "entry1 = '" + req.files[0].originalname + "',"
-            : ""
-        } ${
-          req.files.length > 1
-            ? "entry2 = '" + req.files[1].originalname + "',"
-            : ""
-        }',entry3='${data.name}',entry4='${data.caption}',text1='${
+        `UPDATE  page SET ${strr} entry4='${data.name}',text1='${
           data.description
-        }' WHERE = id= ${data.id}`,
+        }' WHERE  id= ${data.id}`,
         (err, result, fields) => {
           if (err) {
             res.json({
@@ -377,7 +457,7 @@ const updater = (req, res, data) => {
       break;
     case "menu":
       db.query(
-        `UPDATE  page SET text1='${data}' WHERE type= 'menu';`,
+        `UPDATE  page SET text1='${JSON.stringify(data.value)}' WHERE type= 'menu';`,
         (err, result, fields) => {
           if (err) {
             res.json({
