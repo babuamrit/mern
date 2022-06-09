@@ -1,15 +1,16 @@
-import service from "./routes/apis.js"
-import express from "express"
-import path from "path"
-import cors from "cors"
+import service from "./routes/apis.js";
+import express from "express";
+import path from "path";
+import cors from "cors";
 
-import {fileURLToPath} from 'url';
+import { fileURLToPath } from "url";
 const app = express();
 app.use(cors());
 const __filename = fileURLToPath(import.meta.url);
 
 // 👇️ "/home/john/Desktop/javascript"
 const __dirname = path.dirname(__filename);
+app.use(express.static(path.join(__dirname, "uploads")));
 app.use(express.static(path.join(__dirname, "build")));
 
 app.get("/", function (req, res) {

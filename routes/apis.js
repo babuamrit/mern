@@ -1,7 +1,7 @@
-import {Router} from "express"
-import db from "../db.js"
-import cors from "cors"
-import multer from "multer"
+import { Router } from "express";
+import db from "../db.js";
+import cors from "cors";
+import multer from "multer";
 
 var router = Router();
 
@@ -11,7 +11,15 @@ import uploader, {
   getbyid,
   getbyparam,
 } from "./uploadhandler.js";
-const upload = multer({ dest: "../uploads/" });
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+var upload = multer({ storage: storage });
 
 router.get("/signin", function (req, res) {
   res.send("/signin");
@@ -37,39 +45,70 @@ router.get("/", function (req, res) {
     }
   );
 });
+router.get("/iniglobal", function (req, res) {
+  db.query(
+    "INSERT INTO page (type) VALUES('global');",
+    function (err, result, fields) {
+      db.close();
+      if (err) {
+        res.send("error happened");
+        res.end();
+        console.log(err);
+        return;
+      }
 
-router.post("/delete", cors(), (req, res) => {
-  console.log(req.query);
-  res.send("hello");
-  res.end();
+      res.send("db created");
+      res.end();
+    }
+  );
+});
+
+router.get("/inimenu", function (req, res) {
+  db.query(
+    `INSERT INTO page (type,text1) VALUES('menu','${JSON.stringify([])}');`,
+    function (err, result, fields) {
+      db.close();
+      if (err) {
+        res.send("error happened");
+        res.end();
+        console.log(err);
+        return;
+      }
+
+      res.send("db created");
+      res.end();
+    }
+  );
 });
 
 router.post("/create", upload.array("file"), (req, res) => {
-  console.log(req.body);
-  uploader(req,res,req.body.data)
- 
+  const data = JSON.parse(JSON.stringify(req.body));
+  console.log(data);
+  uploader(req, res, JSON.parse(data.data));
+  // res.json({ ok: "ok" });
+  // res.end();
 });
 router.post("/update", upload.array("file"), (req, res) => {
-  const metadata = req.body.metadata;
-  const data = req.body.data;
-  updater(req, res, metadata, data);
+  const data = JSON.parse(JSON.stringify(req.body)).data;
+  console.log(data);
+  updater(req, res, JSON.parse(data));
 });
 
 router.post("/delete", upload.array("file"), (req, res) => {
-  const data = req.body.data;
-  deletefunction(data, res);
+  const data = JSON.parse(JSON.stringify(req.body)).data;
+  console.log(data);
+  deletefunction(JSON.parse(data), res);
 });
 
 router.post("/getbyid", upload.array("file"), (req, res) => {
   const data = req.body.data;
-  getbyid(data, res);
+  getbyid(JSON.parse(data), res);
 });
 
 router.post("/getbyparam", upload.array("file"), (req, res) => {
-
-  const data = req.body.data;
-  console.log(data)
+  const data = JSON.parse(JSON.stringify(req.body)).data;
+  console.log(data);
   getbyparam(JSON.parse(data), res);
 });
 
-export default router
+export default router;
